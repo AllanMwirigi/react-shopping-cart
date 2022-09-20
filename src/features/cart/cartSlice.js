@@ -1,12 +1,30 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import cartItems from '../../cartItems';
 
 const initialState = {
-  cartItems: cartItems,
+  cartItems: [], // cartItems
   amount: 4,
   total: 0,
   isLoading: true,
 }
+
+const url = 'https://course-api.com/react-useReducer-cart-project56';
+
+export const getCartItems = createAsyncThunk('cart/getCartItems', async (data, thunkAPI) => {
+  try {
+    // thunkAPI.getState() gives full state in store i.e cart and modal
+    // thunkAPI.dispatch() can run an action from any feature i.e. modal
+    const res = await axios(url);
+    return res.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
+// export const getCartItems = createAsyncThunk('cart/getCartItems', () => {
+//   return fetch(url).then((res) => res.json()).catch((err) => console.log(err));
+// });
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -36,6 +54,19 @@ const cartSlice = createSlice({
       });
       state.amount = count;
       state.total = total;
+    }
+  },
+  extraReducers: {
+    [getCartItems.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getCartItems.fulfilled]: (state, action) => {
+      state.cartItems = action.payload;
+      state.isLoading = false;
+    },
+    [getCartItems.rejected]: (state, action) => {
+      state.isLoading = false;
+      console.log(action.payload);
     }
   }
 })
