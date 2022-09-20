@@ -4,7 +4,7 @@ Built with React and Redux Toolkit.
 
 ## Project Setup
 ### Clone the repository.
-`git clone https://github.com/AllanMwirigi/react-shopping-cart`
+`git clone https://github.com/AllanMwirigi/react-shopping-cart.git`
 
 ### Install dependencies
 `npm install`
